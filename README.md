@@ -25,3 +25,9 @@ Tek bir nöronun ve küçük bir katmanın sıfırdan, hazır bir framework kull
   ```
 
 İlk iki hücre `input()` ile kullanıcıdan sayı bekler; 4. hücreden itibaren değerler sabitlenmiştir (`x1, x2, x3 = 1.0, 2.0, 3.0`).
+
+## Hafta 2 — Backpropagation (micrograd)
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bluegreensun/yz50-week1-neural-networks/blob/main/hafta-2/YZ50_Week2_Backpropagation.ipynb)
+
+`hafta-2/YZ50_Week2_Backpropagation.ipynb` — `Value` sınıfı ve computation graph, elle gradient doldurma, `backward()` ile otomatik geri yayılım, `tanh`'ın `exp`/`pow`/bölme ile parçalanması, sayısal türev + PyTorch ile üçlü doğrulama (Görev 1–4).
