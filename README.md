@@ -4,7 +4,7 @@ Bu repo, YZ50 programındaki haftalık çalışmalarımı içerir; her haftanın
 
 ## Hafta 1 — Neural Networks
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bluegreensun/yz50-week1-neural-networks/blob/main/hafta-1/YZ50_Week1_Neural_Networks.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bluegreensun/yz50/blob/main/hafta-1/YZ50_Week1_Neural_Networks.ipynb)
 
 Tek bir nöronun ve küçük bir katmanın sıfırdan, hazır bir framework kullanmadan (saf Python + matplotlib) nasıl hesaplandığını adım adım gösteren notebook.
 
@@ -28,6 +28,6 @@ jupyter notebook YZ50_Week1_Neural_Networks.ipynb
 
 ## Hafta 2 — Backpropagation (micrograd)
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bluegreensun/yz50-week1-neural-networks/blob/main/hafta-2/YZ50_Week2_Backpropagation.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bluegreensun/yz50/blob/main/hafta-2/YZ50_Week2_Backpropagation.ipynb)
 
 `hafta-2/YZ50_Week2_Backpropagation.ipynb` — `Value` sınıfı ve computation graph, elle gradient doldurma, `backward()` ile otomatik geri yayılım, `tanh`'ın `exp`/`pow`/bölme ile parçalanması, sayısal türev + PyTorch ile üçlü doğrulama (Görev 1–4).
