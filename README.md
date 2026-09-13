@@ -51,3 +51,24 @@ cd hafta-3
 pip install -r requirements.txt
 jupyter notebook YZ50_Week3_Bigram_Language_Model.ipynb
 ```
+
+## Hafta 4 — MLP Dil Modeli (makemore part 2)
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bluegreensun/yz50/blob/main/hafta-4/YZ50_Week4_MLP_Language_Model.ipynb)
+
+`hafta-4/YZ50_Week4_MLP_Language_Model.ipynb` — Bengio 2003 tarzı çok katmanlı algılayıcı (MLP) ile karakter düzeyinde dil modeli. Hafta 3'ün bigram modelinin aksine 3 harflik bağlama (`block_size = 3`) bakılıyor ve karakterler öğrenilebilir embedding'lerle temsil ediliyor (Görev 1–5 ve 7):
+
+1. **Veri seti ve embedding** — `names.txt` otomatik indirilir; kayan bağlam penceresiyle `X` (N, 3) / `Y` (N,) kurulumu, `C` embedding tablosu ve `C[X]` ile çok boyutlu indeksleme (one-hot çarpımıyla aynı sonuç).
+2. **Forward pass ve loss** — `.view` ile düzleştirme (`cat`'ten neden ucuz olduğu), `tanh` gizli katman, logits; loss'un elle hesabı ile `F.cross_entropy`'nin aynı sonucu verdiğinin doğrulanması ve softmax'ta `exp` taşmasının max çıkarılarak engellenmesi.
+3. **Eğitim döngüsü** — %80/%10/%10 train/dev/test bölmesi, tek minibatch'i kasten overfit etme, learning rate taraması (log-scale 0.001–1), 40.000 adım minibatch eğitimi + son %25'te lr decay. Sonuç: train 2.295 / dev 2.529 — bigramdan iyi ama underfitting.
+4. **Modeli büyütme** — dört konfigürasyon (emb 2/10 × hidden 100/300) karşılaştırması; en iyisi emb=10, hidden=100 ile dev 2.464 (bigram 2.591). Ayrıca 2 boyutlu karakter embedding'lerinin grafiği ve iki modelden üretilen isimlerin yan yana kıyası.
+5. **Initialization** — kötü init'in iki ayrı problemi: geniş logits (başlangıç loss'u 18.3, beklenen log(27)=3.3) ve doymuş `tanh` (%61.9). Sadece çıkış katmanını düzeltmek ilkini çözüyor, ikincisini değil; Kaiming ölçeği (`gain/√fan_in`, tanh için gain=5/3) doymayı %10.8'e indirip dev loss'u 2.453'ten 2.373'e çekiyor.
+6. **Türkçe isimler** (Görev 7) — `turkce_isim_clean.txt` (13.865 isim, ç ğ ı ö ş ü dahil 30 karakterlik alfabe) ile aynı pipeline. Dosya alfabetik sıralı olduğu için bölmeden önce karıştırılıyor. MLP dev 2.151, bigram dev 2.491.
+
+Veri dosyası (`turkce_isim_clean.txt`) klasörün içinde; Colab'da açınca sol panelden yüklemek gerekir (`names.txt` notebook tarafından indirilir). Yerelde:
+
+```bash
+cd hafta-4
+pip install -r requirements.txt
+jupyter notebook YZ50_Week4_MLP_Language_Model.ipynb
+```
