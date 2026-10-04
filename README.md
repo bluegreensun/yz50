@@ -72,3 +72,24 @@ cd hafta-4
 pip install -r requirements.txt
 jupyter notebook YZ50_Week4_MLP_Language_Model.ipynb
 ```
+
+## Hafta 6 — WaveNet (makemore part 5)
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bluegreensun/yz50/blob/main/hafta-6/YZ50_Week6_WaveNet_Turkce.ipynb)
+
+`hafta-6/YZ50_Week6_WaveNet_Turkce.ipynb` — Hafta 4'ün düz MLP'si yerine, bağlamı tek adımda değil kademeli olarak birleştiren WaveNet tarzı hiyerarşik bir ağ; Türkçe isim dataseti üzerinde (Görev 6):
+
+1. **Veri seti** — `turkce_isim_clean.txt` (13.865 isim, ç ğ ı ö ş ü dahil 30 karakterlik alfabe), `block_size = 8` ile kayan bağlam penceresi ve Hafta 4 ile aynı %80/%10/%10 bölmesi (train 79.430 / dev 10.320 / test 10.123 örnek).
+2. **Katman sınıfları** — PyTorch'un `nn.Module`'üne karşılık gelen kendi sınıfları: `Embedding`, `Flatten`, `FlattenConsecutive`, `Linear`, `BatchNorm1d` (2D `(B, C)` ve 3D `(B, T, C)` girdiyi birlikte destekleyecek şekilde), `Tanh` ve katmanları sırayla çağıran `Sequential`.
+3. **Hiyerarşik mimari** — `FlattenConsecutive(2)` ile bağlamın ikişer ikişer eşlenmesi: 8 → 4 → 2 → 1. Her adımda `(B, T, C) -> (B, T/2, C*2)` ve ardından `Linear + BatchNorm + tanh`; emb=10, hidden=100. Shape akışı hücre çıktısında adım adım yazdırılıyor.
+4. **Eğitim** — 40.000 adım, batch 32, son %25'te lr 0.1 → 0.01 decay; loss eğrisi 1000 adımlık ortalamalarla çiziliyor. Eğitim sonunda BatchNorm katmanları `training = False` ile running istatistiklere geçiyor.
+5. **Karşılaştırma** — aynı kelime listesi ve aynı bölme üzerinde Hafta 4 Türkçe MLP baseline'ı (context=3) yeniden eğitiliyor. Dev loss: MLP 2.3815 → WaveNet 2.2717 (0.1098 iyileşme); daha uzun bağlam ve kademeli birleştirme validation performansını iyileştirdi.
+6. **Örnekleme** — modelden üretilen Türkçe isimler (`cantürk`, `efeki`, `akaygun`, `gülsan`, `kerkaya`, `hürhalit`, `sertan` …).
+
+Veri dosyası (`turkce_isim_clean.txt`) klasörün içinde; Colab'da açınca sol panelden yüklemek gerekir. Yerelde:
+
+```bash
+cd hafta-6
+pip install -r requirements.txt
+jupyter notebook YZ50_Week6_WaveNet_Turkce.ipynb
+```
