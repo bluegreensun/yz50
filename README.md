@@ -93,3 +93,22 @@ cd hafta-6
 pip install -r requirements.txt
 jupyter notebook YZ50_Week6_WaveNet_Turkce.ipynb
 ```
+
+## Hafta 7 — Self-Attention (Let's build GPT)
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bluegreensun/yz50/blob/main/hafta-7/YZ50_Week7_GPT_Self_Attention.ipynb)
+
+`hafta-7/YZ50_Week7_GPT_Self_Attention.ipynb` — isim verisinden tek parça metne geçiş: Tiny Shakespeare üzerinde karakter düzeyinde bigram tabanı, self-attention'ın arkasındaki matris hilesi ve tek bir self-attention head'li model (Görev 1–4):
+
+1. **Bigram tabanı** — Tiny Shakespeare (1.115.394 karakter, 65 karakterlik vocab) otomatik indirilir; karakter tokenizer, karıştırmadan %90/%10 train/val bölmesi, `(B, T)` chunk'lardan batch. `nn.Embedding(65, 65)` bigram modeli 3000 adımda val 2.4907'ye iniyor (sayım modeli 2.4819); sonuç Görev 4 için `bigram_baseline.json`'a kaydediliyor.
+2. **Matris hilesi** — her pozisyonun geçmişinin ortalaması üç yoldan: `for` döngüsü, `torch.tril` ile matris çarpımı ve `masked_fill(-inf)` + softmax. Üçünün aynı sonucu verdiği (float32 toleransı ile) ve matris çarpımının `B=32, T=256, C=64`'te döngüden ~44x hızlı olduğu gösteriliyor; rastgele skorlarla softmax'ın ağırlıklı ortalamaya dönüşmesi.
+3. **Tek self-attention head** — token + pozisyon embedding'i, query/key/value, `(B, T, T)` ağırlık matrisinin bir dizi üzerinde satır satır okunması; pozisyon embedding'i olmadan aynı karakterin iki farklı yerdeki key'inin ayırt edilemediği ve `√head_size`'a bölmenin skor varyansını 1'e çektiği.
+4. **Eğitim ve karşılaştırma** — tek head'li model (7.553 parametre) ile head'siz kontrol modeli aynı ayarlarla eğitiliyor. Val loss: bigram 2.4907, head'siz 2.4963, tek head 2.4047 (%3.5 düşüş, perplexity 12.1 → 11.1). Pozisyon bazında kazancın tamamı bağlamın olduğu t=1..7'den geliyor; üretimde girdinin neden son `block_size` karaktere kırpıldığı.
+
+Veri dosyası notebook tarafından indirilir. Yerelde:
+
+```bash
+cd hafta-7
+pip install -r requirements.txt
+jupyter notebook YZ50_Week7_GPT_Self_Attention.ipynb
+```
