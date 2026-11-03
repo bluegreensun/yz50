@@ -112,3 +112,22 @@ cd hafta-7
 pip install -r requirements.txt
 jupyter notebook YZ50_Week7_GPT_Self_Attention.ipynb
 ```
+
+## Hafta 8 — Multi-Head Attention ve Transformer (Let's build GPT, devam)
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bluegreensun/yz50/blob/main/hafta-8/YZ50_Week8_GPT_Transformer.ipynb)
+
+`hafta-8/YZ50_Week8_GPT_Transformer.ipynb` — Hafta 7'nin tek head'li modelinden adım adım küçük bir GPT'ye: multi-head attention, feedforward, residual bağlantılar ve LayerNorm; ardından modeli büyütme ve Türkçe metin üzerinde eğitim (Görev 1–4):
+
+1. **Multi-head attention** — aynı parametre bütçesiyle (7.553) tek 1×32 head yerine 4×8 head. Önce Hafta 7'nin tek head sonucu birebir yeniden üretiliyor (val 2.4047); 4 head ile val 2.2693 (0.1354 düşüş, perplexity 11.08 → 9.67). Pozisyon bazında kazanç bağlamın olduğu t=1..7'den geliyor (her pozisyonda ~0.13–0.17), t=0'da fark yok.
+2. **Transformer bloğu** — bileşenler tek tek eklenerek val loss: bigram 2.4907 → tek head 2.4047 → multi-head 2.2693 → + feedforward 2.2358 → 3 blok + projeksiyon + residual (ffwd 4x) 2.0666 → + LayerNorm 2.0568. Residual olmadan 3 bloğu üst üste koymanın val loss'u kötüleştirdiği (2.3319 / 2.3828) ablation satırlarıyla gösteriliyor. Ayrıca LayerNorm ile BatchNorm1d karşılaştırması: hangi eksende normalize ettikleri, bir örneğin çıktısının batch'teki diğer örneklere bağlılığı, train/eval farkı, batch=1'de NaN ve `(B, T, C)` girdide BatchNorm'un gelecekteki pozisyonlardan bilgi sızdırması; kendi `LayerNorm1d` sınıfının `nn.LayerNorm` ile aynı sonucu verdiği.
+3. **Modeli büyütme** — n_embd 128, 4 head (head_size 32), 4 katman, block_size 64, dropout 0.1: 816.705 parametre, CPU'da 4000 adım (~25 dk). Val loss 1.6366; üretilen metin karakter adları ve satır yapısıyla Shakespeare formatına belirgin şekilde yaklaşıyor.
+4. **Türkçe metin** — aynı mimari `turkish.txt` (994.750 karakter, ç ğ ı ö ş ü dahil 72 karakterlik vocab) üzerinde: 818.504 parametre, val loss 0.2081. Val satırlarının %71.3'ü train'de birebir geçtiği için bu loss, Shakespeare'in 1.6366'sıyla doğrudan kıyaslanamaz.
+
+Görev 1–3'ün verisi (Tiny Shakespeare) notebook tarafından indirilir; Görev 4 için `turkish.txt` dosyasını Colab'da sol panelden yüklemek gerekir. Yerelde:
+
+```bash
+cd hafta-8
+pip install -r requirements.txt
+jupyter notebook YZ50_Week8_GPT_Transformer.ipynb
+```
