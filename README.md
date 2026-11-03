@@ -124,7 +124,7 @@ jupyter notebook YZ50_Week7_GPT_Self_Attention.ipynb
 3. **Modeli büyütme** — n_embd 128, 4 head (head_size 32), 4 katman, block_size 64, dropout 0.1: 816.705 parametre, CPU'da 4000 adım (~25 dk). Val loss 1.6366; üretilen metin karakter adları ve satır yapısıyla Shakespeare formatına belirgin şekilde yaklaşıyor.
 4. **Türkçe metin** — aynı mimari `turkish.txt` (994.750 karakter, ç ğ ı ö ş ü dahil 72 karakterlik vocab) üzerinde: 818.504 parametre, val loss 0.2081. Val satırlarının %71.3'ü train'de birebir geçtiği için bu loss, Shakespeare'in 1.6366'sıyla doğrudan kıyaslanamaz.
 
-Görev 1–3'ün verisi (Tiny Shakespeare) notebook tarafından indirilir; Görev 4 için `turkish.txt` dosyasını Colab'da sol panelden yüklemek gerekir. Yerelde:
+Görev 1–3'ün verisi (Tiny Shakespeare) notebook tarafından indirilir. Görev 4'ün verisi (`turkish.txt`) klasörün içinde; Colab'da açınca sol panelden yüklemek gerekir. Yerelde:
 
 ```bash
 cd hafta-8
