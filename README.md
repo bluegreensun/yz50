@@ -131,3 +131,23 @@ cd hafta-8
 pip install -r requirements.txt
 jupyter notebook YZ50_Week8_GPT_Transformer.ipynb
 ```
+
+## Hafta 9 — GPT Tokenizer (Byte-level BPE)
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bluegreensun/yz50/blob/main/hafta-9/YZ50_Week9_GPT_Tokenizer.ipynb)
+
+`hafta-9/YZ50_Week9_GPT_Tokenizer.ipynb` — karakter düzeyindeki tokenizer'dan GPT'nin kullandığı byte-level BPE'ye: UTF-8, BPE eğitimi, encode/decode, regex ile ön bölme ve GPT-4 tokenizer'ında Türkçe'nin maliyeti (Task 1–5):
+
+1. **Unicode ve UTF-8** — "Bir çığ düşüşünü gördüm." cümlesinin her karakteri için code point (`U+00E7` …), UTF-8 byte'ları ve boyutu. 24 karakter → 35 byte; ç ğ ı ö ş ü UTF-8'de 2'şer byte.
+2. **BPE eğitimi** — minbpe'deki `get_stats` / `merge` / `train` sıfırdan; vocab 256 → 276 (20 birleştirme). Her birleştirme metin olarak yazdırılıp türüne göre etiketleniyor (2 byte'ın birleşip Türkçe harf olması, yarım UTF-8 parçası, boşluk içeren token, harf grubu); sonunda byte sayısı / token sayısı ile sıkıştırma oranı.
+3. **Encode / decode** — emoji içermeyen küçük bir Türkçe metinle vocab 300 (44 merge). İlk öğrenilenler `ı`, `ğ`, `, `, `ş`, `e `. "Çığ yağdı, güneş açtı! 🌞🚀": 40 byte → 21 token (1.90x); emojiler eğitimde hiç görülmemesine rağmen ham 4 byte olarak kalıyor ve `decode(encode(metin)) == metin` doğru, çünkü 256 byte'ın hepsi zaten vocab'ta.
+4. **BasicTokenizer vs RegexTokenizer** — GPT-4'ün `cl100k_base` regex deseniyle metni önce parçalara bölen tokenizer, aynı korpusta düz BPE ile karşılaştırılıyor (vocab 512, ikisi de 256 merge). Basic kelime sınırını aşan token'lar öğreniyor (`e␣`, `,␣`, `ler␣`), Regex boşluğu kelimenin başına alıyor (`␣k`, `␣y`, `␣ya`); ortak öğrenilen token yalnızca 35. Test cümlesi: Basic 63, Regex 51 token. Ayrıca desendeki İngilizce kısaltma kuralının (`'s`, `'d`, `'ll` …) Türkçe ekleri bölmesi: `Ankara'dan` → `['Ankara', "'d", 'an']`, ama kıvrık kesme işaretiyle `Ankara’dan` → `['Ankara', '’dan']`.
+5. **GPT-4'te Türkçe vs İngilizce** — aynı paragrafın iki dili `cl100k_base` ile: Türkçe 89 kelime / 280 token (3.15 token/kelime), İngilizce 110 kelime / 126 token (1.15 token/kelime); Türkçe toplamda 2.22 kat fazla token. Eklemeli yapının etkisi: `ev` 1, `evler` 2, `evlerimiz` 4, `evlerimizden` 5 token; karşılıkları `house` 1, `houses` 1, `our houses` 2, `from our houses` 3.
+
+Task 2 `turkish (1).txt` dosyasını okur (Hafta 8'deki `turkish.txt` kullanılabilir; dosya adı farklıysa `TEXT_PATH` değiştirilmeli); Colab'da sol panelden yüklemek gerekir. Diğer görevlerin metinleri notebook'un içinde. Yerelde:
+
+```bash
+cd hafta-9
+pip install -r requirements.txt
+jupyter notebook YZ50_Week9_GPT_Tokenizer.ipynb
+```
