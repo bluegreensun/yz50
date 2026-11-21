@@ -144,7 +144,7 @@ jupyter notebook YZ50_Week8_GPT_Transformer.ipynb
 4. **BasicTokenizer vs RegexTokenizer** — GPT-4'ün `cl100k_base` regex deseniyle metni önce parçalara bölen tokenizer, aynı korpusta düz BPE ile karşılaştırılıyor (vocab 512, ikisi de 256 merge). Basic kelime sınırını aşan token'lar öğreniyor (`e␣`, `,␣`, `ler␣`), Regex boşluğu kelimenin başına alıyor (`␣k`, `␣y`, `␣ya`); ortak öğrenilen token yalnızca 35. Test cümlesi: Basic 63, Regex 51 token. Ayrıca desendeki İngilizce kısaltma kuralının (`'s`, `'d`, `'ll` …) Türkçe ekleri bölmesi: `Ankara'dan` → `['Ankara', "'d", 'an']`, ama kıvrık kesme işaretiyle `Ankara’dan` → `['Ankara', '’dan']`.
 5. **GPT-4'te Türkçe vs İngilizce** — aynı paragrafın iki dili `cl100k_base` ile: Türkçe 89 kelime / 280 token (3.15 token/kelime), İngilizce 110 kelime / 126 token (1.15 token/kelime); Türkçe toplamda 2.22 kat fazla token. Eklemeli yapının etkisi: `ev` 1, `evler` 2, `evlerimiz` 4, `evlerimizden` 5 token; karşılıkları `house` 1, `houses` 1, `our houses` 2, `from our houses` 3.
 
-Task 2 `turkish (1).txt` dosyasını okur (Hafta 8'deki `turkish.txt` kullanılabilir; dosya adı farklıysa `TEXT_PATH` değiştirilmeli); Colab'da sol panelden yüklemek gerekir. Diğer görevlerin metinleri notebook'un içinde. Yerelde:
+Task 2'nin verisi (`turkish.txt`, Hafta 8 ile aynı metin) klasörün içinde; Colab'da açınca sol panelden yüklemek gerekir. Diğer görevlerin metinleri notebook'un içinde. Yerelde:
 
 ```bash
 cd hafta-9
