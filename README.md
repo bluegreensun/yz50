@@ -151,3 +151,22 @@ cd hafta-9
 pip install -r requirements.txt
 jupyter notebook YZ50_Week9_GPT_Tokenizer.ipynb
 ```
+
+## Hafta 10 — GPT-2 (124M) Yeniden Üretimi (Let's reproduce GPT-2)
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bluegreensun/yz50/blob/main/hafta-10/YZ50_Week10_GPT2_Reproduction.ipynb)
+
+`hafta-10/YZ50_Week10_GPT2_Reproduction.ipynb` — Hugging Face'teki eğitilmiş GPT-2 small'un ağırlıklarını incelemek, aynı mimariyi PyTorch ile sıfırdan yazıp bu ağırlıkları yüklemek, top-k sampling ile metin üretmek ve rastgele başlatılmış modelle tek bir batch'i ezberlemek (Task 1–4):
+
+1. **GPT-2 ağırlıkları** — `GPT2LMHeadModel.from_pretrained("gpt2")`: 12 katman, 12 head, n_embd 768, 1024 token bağlam, 50.257 token'lık vocab. `state_dict`'teki tüm ağırlıkların isim ve boyutları, toplam 124.439.808 parametre. Öğrenilmiş pozisyon embedding'inin (`wpe`, 1024×768) ısı haritası ve ilk 5 boyutun pozisyona göre eğrileri.
+2. **Sıfırdan GPT-2** — `CausalSelfAttention` (tüm head'lerin Q, K, V'si tek `c_attn` Linear'ında), `MLP` (tanh yaklaşımlı GELU = `gelu_new`), pre-LayerNorm + residual'lı `Block` ve `wte` / `wpe` / `ln_f` / `lm_head`'li `GPT`; `lm_head` ile `wte` arasında weight tying. HF ağırlıkları yüklenirken HF'nin `Conv1D` katmanlarından gelen 48 matris transpoze ediliyor. "The capital of France is" için iki modelin logits'i arasındaki maksimum mutlak fark 0.000095; ilk 5 tahmin (` the` 0.0846, ` now`, ` a`, ` France`, ` Paris`) olasılıklarıyla birlikte aynı.
+3. **Metin üretimi ve tokenizer** — top-k (k=50) sampling ile prompt başına 5 örnek, 30 yeni token. İngilizce prompt akıcı biçimde devam ediyor; Türkçe prompt ("Yapay zeka öğrenmek istiyorum.") anlamsız harf dizilerine ya da İngilizceye kayıyor. Aynı cümle GPT-2 tokenizer'ında İngilizce 7, Türkçe 16 token (`ö`'nün iki UTF-8 byte'ı ayrı token'lara bölünüyor); `cl100k_base`'de 7'ye 13. Türkçe/İngilizce token oranı: GPT-2 2.29x, cl100k 1.86x.
+4. **Rastgele init ve tek batch'i ezberleme** — `GPT2Config()` ile rastgele başlatılmış 124M'lik model: başlangıç loss'u 11.1646, beklenen `ln(50257)` = 10.8249. Kısa bir metinden alınan tek 4×32 batch üzerinde AdamW (lr 3e-4) ile 200 adım: loss 0.000960'a iniyor (%99.99 düşüş) ve token tahmin doğruluğu %100 — eğitim döngüsünün doğru çalıştığını gösteren kasıtlı overfit.
+
+Model ağırlıkları ve tokenizer Hugging Face / tiktoken üzerinden otomatik indirilir (GPT-2 ~548 MB); harici veri dosyası yok. Yerelde:
+
+```bash
+cd hafta-10
+pip install -r requirements.txt
+jupyter notebook YZ50_Week10_GPT2_Reproduction.ipynb
+```
